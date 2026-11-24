@@ -1,0 +1,26 @@
+{% extends 'cementerio/base.html' %}
+{% block title %}{{ difunto }}{% endblock %}
+{% block content %}
+<h1>{{ difunto.nombre_completo }}</h1>
+<ul>
+    <li>Cédula: {{ difunto.cedula }}</li>
+    <li>Nacimiento: {{ difunto.fecha_nacimiento|date:"d/m/Y"|default:"—" }}</li>
+    <li>Fallecimiento: {{ difunto.fecha_fallecimiento|date:"d/m/Y" }}</li>
+    <li>Registrado por: {{ difunto.creado_por|default:"—" }}</li>
+</ul>
+<p>
+    <a href="{% url 'difunto_list' %}">Volver a difuntos</a>
+    {% if perms.cementerio.change_difunto and puede_modificar %}<a href="{% url 'difunto_update' difunto.pk %}">Editar</a>{% endif %}
+    {% if perms.cementerio.delete_difunto and puede_modificar %}<a href="{% url 'difunto_delete' difunto.pk %}">Eliminar</a>{% endif %}
+</p>
+
+<h2>Sepultado en</h2>
+<ul>
+    {% for tumba in tumbas %}
+        <li><a href="{{ tumba.get_absolute_url }}">{{ tumba.codigo }}</a> — sector
+            <a href="{{ tumba.sector.get_absolute_url }}">{{ tumba.sector }}</a></li>
+    {% empty %}
+        <li>Sin tumba asignada.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

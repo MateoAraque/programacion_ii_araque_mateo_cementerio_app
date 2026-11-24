@@ -1,0 +1,39 @@
+{% extends 'cementerio/base.html' %}
+{% block title %}Difuntos{% endblock %}
+{% block content %}
+<h1>Difuntos</h1>
+<p>
+    {% if perms.cementerio.add_difunto %}<a href="{% url 'difunto_create' %}">Registrar difunto</a>{% endif %}
+    <a href="{% url 'home' %}">Atrás</a>
+</p>
+<form method="get">
+    <p>
+        <label for="q">Buscar por nombre, apellido o cédula</label>
+        <input type="text" id="q" name="q" value="{{ q }}">
+    </p>
+    <button type="submit">Buscar</button>
+</form>
+<table>
+    <thead><tr><th>Apellidos y nombres</th><th>Cédula</th><th>Fallecimiento</th><th>Acciones</th></tr></thead>
+    <tbody>
+        {% for difunto in difuntos %}
+        <tr>
+            <td><a href="{{ difunto.get_absolute_url }}">{{ difunto }}</a></td>
+            <td>{{ difunto.cedula }}</td>
+            <td>{{ difunto.fecha_fallecimiento|date:"d/m/Y" }}</td>
+            <td>
+                <a href="{{ difunto.get_absolute_url }}">Ver</a>
+                {% if perms.cementerio.change_difunto and difunto.puede_modificar %}
+                    <a href="{% url 'difunto_update' difunto.pk %}">Editar</a>
+                {% endif %}
+                {% if perms.cementerio.delete_difunto and difunto.puede_modificar %}
+                    <a href="{% url 'difunto_delete' difunto.pk %}">Eliminar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No hay difuntos registrados.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
