@@ -1,0 +1,21 @@
+{% extends 'cementerio/base.html' %}
+{% block title %}{{ sector.nombre }}{% endblock %}
+{% block content %}
+<h1>Sector: {{ sector.nombre }}</h1>
+<p>{{ sector.descripcion|default:"Sin descripción." }}</p>
+<p>Creado por: {{ sector.creado_por|default:"—" }}</p>
+<p>
+    <a href="{% url 'sector_list' %}">Volver a sectores</a>
+    {% if perms.cementerio.change_sector and puede_modificar %}<a href="{% url 'sector_update' sector.pk %}">Editar</a>{% endif %}
+    {% if perms.cementerio.delete_sector and puede_modificar %}<a href="{% url 'sector_delete' sector.pk %}">Eliminar</a>{% endif %}
+</p>
+
+<h2>Tumbas de este sector ({{ tumbas.count }})</h2>
+<ul>
+    {% for tumba in tumbas %}
+        <li><a href="{{ tumba.get_absolute_url }}">{{ tumba.codigo }}</a> — {{ tumba.get_estado_display }}</li>
+    {% empty %}
+        <li>Este sector aún no tiene tumbas.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

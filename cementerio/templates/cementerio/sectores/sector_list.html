@@ -1,0 +1,31 @@
+{% extends 'cementerio/base.html' %}
+{% block title %}Sectores{% endblock %}
+{% block content %}
+<h1>Sectores</h1>
+<p>
+    {% if perms.cementerio.add_sector %}<a href="{% url 'sector_create' %}">Nuevo sector</a>{% endif %}
+    <a href="{% url 'home' %}">Atrás</a>
+</p>
+<table>
+    <thead><tr><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr></thead>
+    <tbody>
+        {% for sector in sectores %}
+        <tr>
+            <td><a href="{{ sector.get_absolute_url }}">{{ sector.nombre }}</a></td>
+            <td>{{ sector.descripcion|default:"—" }}</td>
+            <td>
+                <a href="{{ sector.get_absolute_url }}">Ver</a>
+                {% if perms.cementerio.change_sector and sector.puede_modificar %}
+                    <a href="{% url 'sector_update' sector.pk %}">Editar</a>
+                {% endif %}
+                {% if perms.cementerio.delete_sector and sector.puede_modificar %}
+                    <a href="{% url 'sector_delete' sector.pk %}">Eliminar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No hay sectores registrados.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

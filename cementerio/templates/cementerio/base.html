@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'cementerio/css/estilos.css' %}">
+    <title>{% block title %}Cementerio{% endblock %}</title>
+</head>
+<body>
+    <nav class="barra">
+        <a href="{% url 'home' %}"><strong>Cementerio</strong></a>
+        {% if user.is_authenticated %}
+            {% if perms.cementerio.view_sector %}<a href="{% url 'sector_list' %}">Sectores</a>{% endif %}
+            {% if perms.cementerio.view_difunto %}<a href="{% url 'difunto_list' %}">Difuntos</a>{% endif %}
+            {% if perms.cementerio.view_tumba %}<a href="{% url 'tumba_list' %}">Tumbas</a>{% endif %}
+            {% if perms.cementerio.view_servicio %}<a href="{% url 'servicio_list' %}">Servicios</a>{% endif %}
+            <span class="derecha">
+                Hola, {{ user.username }}
+                <form method="post" action="{% url 'logout' %}" class="en-linea">
+                    {% csrf_token %}
+                    <button type="submit">Salir</button>
+                </form>
+            </span>
+        {% else %}
+            <span class="derecha">
+                <a href="{% url 'login' %}">Entrar</a>
+                <a href="{% url 'registro' %}">Registrarse</a>
+            </span>
+        {% endif %}
+    </nav>
+
+    <main>
+        {% if messages %}
+            <ul class="mensajes">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
