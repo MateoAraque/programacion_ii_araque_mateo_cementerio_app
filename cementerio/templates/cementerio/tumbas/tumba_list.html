@@ -1,0 +1,62 @@
+{% extends 'cementerio/base.html' %}
+{% block title %}Tumbas{% endblock %}
+{% block content %}
+<h1>Tumbas</h1>
+<p>
+    {% if perms.cementerio.add_tumba %}<a href="{% url 'tumba_create' %}">Nueva tumba</a>{% endif %}
+    <a href="{% url 'home' %}">Atrás</a>
+</p>
+
+<form method="get">
+    <p>
+        <label for="q">Buscar por código, sector o difunto</label>
+        <input type="text" id="q" name="q" value="{{ q }}">
+    </p>
+    <p>
+        <label for="sector_id">Sector</label>
+        <select name="sector_id" id="sector_id">
+            <option value="">Todos los sectores</option>
+            {% for sector in sectores %}
+                <option value="{{ sector.id }}" {% if sector_id == sector.id|stringformat:"s" %}selected{% endif %}>{{ sector.nombre }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <p>
+        <label for="estado">Estado</label>
+        <select name="estado" id="estado">
+            <option value="">Todos los estados</option>
+            {% for valor, etiqueta in estados %}
+                <option value="{{ valor }}" {% if estado == valor %}selected{% endif %}>{{ etiqueta }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <button type="submit">Buscar</button>
+</form>
+
+<table>
+    <thead><tr><th>Código</th><th>Sector</th><th>Estado</th><th>Difuntos</th><th>Precio</th><th>Acciones</th></tr></thead>
+    <tbody>
+        {% for tumba in tumbas %}
+        <tr>
+            <td><a href="{{ tumba.get_absolute_url }}">{{ tumba.codigo }}</a></td>
+            <td><a href="{{ tumba.sector.get_absolute_url }}">{{ tumba.sector }}</a></td>
+            <td>{{ tumba.get_estado_display }}</td>
+            <td>{% for d in tumba.difuntos.all %}{{ d }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
+            <td>$ {{ tumba.precio }}</td>
+            <td>
+                <a href="{{ tumba.get_absolute_url }}">Ver</a>
+                {% if perms.cementerio.change_tumba and tumba.puede_modificar %}
+                    <a href="{% url 'tumba_update' tumba.pk %}">Editar</a>
+                {% endif %}
+                {% if perms.cementerio.delete_tumba and tumba.puede_modificar %}
+                    <a href="{% url 'tumba_delete' tumba.pk %}">Eliminar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No hay tumbas disponibles.</td></tr>
+        {% endfor %}
+    </tbody>
+    <tfoot><tr><td colspan="6">Total de tumbas: {{ tumbas|length }}</td></tr></tfoot>
+</table>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'cementerio/base.html' %}
+{% block title %}Tumba {{ tumba.codigo }}{% endblock %}
+{% block content %}
+<h1>Tumba {{ tumba.codigo }}</h1>
+<ul>
+    <li>Sector: <a href="{{ tumba.sector.get_absolute_url }}">{{ tumba.sector }}</a></li>
+    <li>Estado: {{ tumba.get_estado_display }}</li>
+    <li>Capacidad: {{ tumba.capacidad }}</li>
+    <li>Precio: $ {{ tumba.precio }}</li>
+    <li>Creada por: {{ tumba.creado_por|default:"—" }}</li>
+</ul>
+<p>
+    <a href="{% url 'tumba_list' %}">Volver a tumbas</a>
+    {% if perms.cementerio.change_tumba and puede_modificar %}<a href="{% url 'tumba_update' tumba.pk %}">Editar</a>{% endif %}
+    {% if perms.cementerio.delete_tumba and puede_modificar %}<a href="{% url 'tumba_delete' tumba.pk %}">Eliminar</a>{% endif %}
+</p>
+
+<h2>Difuntos sepultados</h2>
+<ul>
+    {% for difunto in difuntos %}
+        <li><a href="{{ difunto.get_absolute_url }}">{{ difunto }}</a> (+ {{ difunto.fecha_fallecimiento|date:"d/m/Y" }})</li>
+    {% empty %}
+        <li>Sin difuntos asignados.</li>
+    {% endfor %}
+</ul>
+
+<h2>Servicios realizados</h2>
+<ul>
+    {% for servicio in servicios %}
+        <li><a href="{{ servicio.get_absolute_url }}">{{ servicio.get_tipo_display }}</a>
+            — {{ servicio.fecha|date:"d/m/Y" }} — $ {{ servicio.costo }}</li>
+    {% empty %}
+        <li>Sin servicios registrados.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
