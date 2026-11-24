@@ -1,0 +1,18 @@
+{% extends 'cementerio/base.html' %}
+{% block title %}Servicio{% endblock %}
+{% block content %}
+<h1>{{ servicio.get_tipo_display }} — {{ servicio.fecha|date:"d/m/Y" }}</h1>
+<ul>
+    <li>Tumba: <a href="{{ servicio.tumba.get_absolute_url }}">{{ servicio.tumba.codigo }}</a>
+        (sector <a href="{{ servicio.tumba.sector.get_absolute_url }}">{{ servicio.tumba.sector }}</a>)</li>
+    <li>Costo: $ {{ servicio.costo }}</li>
+    <li>Responsable: {{ servicio.responsable }}</li>
+    <li>Observaciones: {{ servicio.observaciones|default:"—" }}</li>
+    <li>Registrado por: {{ servicio.creado_por|default:"—" }}</li>
+</ul>
+<p>
+    <a href="{% url 'servicio_list' %}">Volver a servicios</a>
+    {% if perms.cementerio.change_servicio and puede_modificar %}<a href="{% url 'servicio_update' servicio.pk %}">Editar</a>{% endif %}
+    {% if perms.cementerio.delete_servicio and puede_modificar %}<a href="{% url 'servicio_delete' servicio.pk %}">Eliminar</a>{% endif %}
+</p>
+{% endblock %}

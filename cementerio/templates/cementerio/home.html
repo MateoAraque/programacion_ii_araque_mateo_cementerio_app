@@ -1,0 +1,24 @@
+{% extends 'cementerio/base.html' %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<h1>Gestión del Cementerio</h1>
+<p>Bienvenido(a), {{ user.username }}. Desde aquí administras sectores, difuntos, tumbas y servicios.</p>
+
+<table>
+    <thead><tr><th>Sectores</th><th>Difuntos</th><th>Tumbas</th><th>Servicios</th></tr></thead>
+    <tbody>
+        <tr>
+            <td>{{ total_sectores }}</td><td>{{ total_difuntos }}</td>
+            <td>{{ total_tumbas }}</td><td>{{ total_servicios }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Menú principal</h2>
+<ul>
+    {% if perms.cementerio.view_sector %}<li><a href="{% url 'sector_list' %}">Lista de sectores</a></li>{% endif %}
+    {% if perms.cementerio.view_difunto %}<li><a href="{% url 'difunto_list' %}">Lista de difuntos</a></li>{% endif %}
+    {% if perms.cementerio.view_tumba %}<li><a href="{% url 'tumba_list' %}">Lista de tumbas</a></li>{% endif %}
+    {% if perms.cementerio.view_servicio %}<li><a href="{% url 'servicio_list' %}">Lista de servicios</a></li>{% endif %}
+</ul>
+{% endblock %}
